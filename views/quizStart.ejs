@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <%- include ('./partials/head') %>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <%- include ('./partials/navigation') %>
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <div class="container-fluid">
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">Zahájení kvízu</h1>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-2 col-lg-2">
+                            </div>
+                            <div class="col-xl-8 col-lg-8">
+                                <div class="card shadow mb-4">
+                                    <div
+                                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            Generování otázek
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="small mb-1">
+                                                    Typ otázky:
+                                                </div>
+                                                <select class="form-select form-control">
+                                                    <option selected>Open this select menu</option>
+                                                    <option value="1">One</option>
+                                                    <option value="2">Two</option>
+                                                    <option value="3">Three</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="small mb-1">
+                                                    Počet otázek ke generování:
+                                                </div>
+                                                <input type="number" class="form-control" id="inputQuestionCount">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="small mb-1">
+                                                    Počet odpovědí na otázku:
+                                                </div>
+                                                <input type="number" class="form-control" id="inputQuestionOptionCount">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <br />
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <a href="#" class="btn btn-primary btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-arrow-right"></i>
+                                                    </span>
+                                                    <span class="text">Generovat otázky a zahájit kvíz</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form method="post" action="./quiz/generate">
+                <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#loadingModal">
+                    Launch demo modal
+                  </button></form>
+                <%- include ('./partials/footer') %>
+                <%- include ('./partials/loading') %>
+            </div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+    
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/js/sb-admin-2.min.js"></script>
+    <script src="/vendor/chart.js/Chart.min.js"></script>
+    <script src="/js/demo/chart-area-demo.js"></script>
+    <script src="/js/demo/chart-pie-demo.js"></script>
+</body>
+
+</html>

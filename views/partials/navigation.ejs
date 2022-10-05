@@ -1,0 +1,45 @@
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/index">
+        <div class="sidebar-brand-text mx-3">
+            Faktografická aplikace
+        </div>
+    </a>
+    <hr class="sidebar-divider my-0">
+    <li class="nav-item active">
+        <a class="nav-link">
+            <i class="fas fa-fw fa-user"></i>
+            <span>Michael Souček</span>
+        </a>
+    </li>
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">
+        Nabídka
+    </div>
+    <li class="nav-item">
+        <a class="nav-link" href="/quizStart">
+            <i class="fas fa-fw fa-arrow-right"></i>
+            <span>Zahájit kvíz</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="tables.html">
+            <i class="far fa-fw fa-file-alt"></i>
+            <span>Shrnutí započatých kvízů</span>
+        </a>
+    </li>
+    <hr class="sidebar-divider">
+    <li class="nav-item">
+        <form id="logoutForm" action="/logout?_method=DELETE" method="POST">
+            <button type="submit">odh</button>
+            <a class="nav-link" onclick="document.getElementById('logoutForm').submit()">
+                <i class="fas fa-fw fa-sign-out-alt"></i>
+                <span>Odhlásit se</span>
+            </a>
+          </form>
+        
+    </li>
+    <hr class="sidebar-divider d-none d-md-block">
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+</ul>
