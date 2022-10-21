@@ -13,7 +13,7 @@ require('dotenv').config()
 
 const server = express()
 
-const port = 8080
+const port = process.env.PORT || 80
 
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({extended: true}))
