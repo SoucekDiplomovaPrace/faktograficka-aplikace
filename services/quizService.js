@@ -1,88 +1,26 @@
-const Answer = require('../models/answer')
 const Question = require('../models/question')
+const UserQuestion = require('../models/userQuestion')
 
-const queryTemplate = require('../middleware/questionTemplate')
+const getRandomQuestions = async (count) => {
 
-const fetch = require('node-fetch-commonjs')
+    let randomQuestions = []
 
-const baseUrl1 = 'https://dbpedia.org/sparql'
-const baseUrl2 = 'https://query.wikidata.org/sparql'
+    let collectionCount = await Question.count()
 
-const produceQA = (queryOption, optionCount) => {
+    for (let i = 0; i < count; i++) {
 
-   let query
+        let random = Math.floor(Math.random() * collectionCount)
 
-    switch(queryOption) {
-        case 1:
-            query = queryTemplate.highestMountainInCountryQuery
-            break
-        case 2:
-            query = queryTemplate.mostPopulousCityCountryQuery
-            break
-        case 3:
-            query = queryTemplate.countryCapitalQuery
-            break
-        case 4:
-            query = queryTemplate.riverMouthQuery
-            break
-        default:
-            break
+        randomQuestions.push(await Question.findOne().populate('answers').skip(random))
     }
-
-    let generatedAnswers = sendSparqlRequest(query.getAnswers())
-
-    let chosenAnswers = []
-    let counter = optionCount
-
-    while (counter != 0) {
-        let item = getRandomItem(generatedAnswers)
-        if (!chosenAnswers.includes(item)) {
-            chosenAnswers.push(new Answer({
-              text: item  
-            }))
-            counter--
-        }
-    }
-
-    let questionObject = sendSparqlRequest(query.getQuestionObject(chosenAnswers[0]))
-    let completeQuestion
-
-    if (questionObject) {
-        chosenAnswers[0].isCorrect = true
-
-        let question = new Question({
-            question: questionObject,
-            answers: chosenAnswers
-        })
-        //completeQuestion = question.save()
-    }
-
-    return completeQuestion
+    return randomQuestions
 }
 
-const sendSparqlRequest = async (baseQuery) => {
-
-    const fullUrl = baseUrl1 + '?query=' + encodeURIComponent(baseQuery)
-    const headers = { 'Accept': 'application/sparql-results+json' }
-
-    const value =
-        await fetch(fullUrl, { headers })
-        .then(body => body.json())
-        .then(body => body.results.bindings)
-        .catch(error => console.log('Error:', error))
-
-    return value
-}
-
-const getRandomItem = (array) => {
-    
-    const randomIndex = Math.floor(Math.random() * array.length)
-
-    const item = array[randomIndex]
-
-    return item
+const getQuizQuestionsByUser = (userId) => {
+    return UserQuestion.find({takenBy: userId}).populate({path: 'question', populate: {path: 'answers'}}).populate('choosenAnswer')
 }
 
 module.exports = {
-    produceQA
+    getRandomQuestions,
+    getQuizQuestionsByUser
 }

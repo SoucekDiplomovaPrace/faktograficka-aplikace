@@ -1,3 +1,9 @@
+const QuestionTypes = {
+    ChooseBest: Symbol ('ChooseBest'),
+    ChooseTruth: Symbol('ChooseTruth')
+}
+
+
 const prefix = () => {
     let prefixes = 
         `PREFIX dbo: <http://dbpedia.org/ontology/>
@@ -7,45 +13,20 @@ const prefix = () => {
     return prefixes    
 }
 
-// 1. option OK
-const highestMountainInCountryQuery = {
-    getQuestionObject(country) {
-        let query = 
-            `${prefix()}
-            SELECT ?value WHERE {
-                dbr:List_of_elevation_extremes_by_country dbo:wikiPageWikiLink ?mountain.
-                ?mountain dbo:locatedInArea dbr:${country};
-                        dbo:elevation ?height;
-                        rdfs:label ?value.
-                FILTER(langMatches(lang(?value), "EN"))
-            } ORDER BY DESC(?height) LIMIT 1`
-
-        return query    
-    },
-    getAnswers() {
-        let query =
-            `${prefix()}
-            SELECT distinct ?country WHERE {
-                ?item foaf:name ?country.
-                ?item dbo:countryCode ?p.              
-                FILTER(langMatches(lang(?country), "EN"))
-            }`
-
-            return query;
-    }
-}
-
-// 2. option
+// 1. option
 const mostPopulousCityCountryQuery = {
-    getQuestionObject() {
+    getType() {
+        return QuestionTypes.ChooseTruth
+    },
+    getQuestionObject(country) {
         let query =
             `${prefix()}
-            SELECT ?value WHERE {
+            SELECT ?object WHERE {
                 ?city a dbo:City;
                     dbo:country dbr:${country};
                     dbo:populationTotal ?population;
-                    rdfs:label ?value.
-                FILTER(langMatches(lang(?value), "EN"))
+                    rdfs:label ?object.
+                FILTER(langMatches(lang(?object), "EN"))
             } ORDER BY DESC(?population)`
 
         return query;
@@ -53,68 +34,91 @@ const mostPopulousCityCountryQuery = {
     getAnswers() {
         let query =
             `${prefix()}
-            SELECT distinct ?country WHERE {
-                ?item foaf:name ?country.
-                ?item dbo:countryCode ?p.              
-                FILTER(langMatches(lang(?country), "EN"))
+            SELECT DISTINCT ?object
+            WHERE { 
+                ?country dbp:commonName ?object;
+                         rdf:type dbo:Country.
+                FILTER(langMatches(lang(?object), "EN"))
             }`
 
             return query;
     }
 }
 
-// 3. option OK
+// 2. option OK
 const countryCapitalQuery = {
+
+    getType() {
+        return QuestionTypes.ChooseTruth
+    },
     getQuestionObject(country) {
         let query =
             `${prefix()} 
-            SELECT ?value WHERE {
+            SELECT ?object WHERE {
                 dbr:${country} dbo:capital ?city.
-                ?city foaf:name ?value.
-                FILTER(langMatches(lang(?value), "EN"))
-            }`
+                ?city foaf:name ?object.
+                FILTER(langMatches(lang(?object), "EN"))
+            } LIMIT 1`
 
-        return query;
+        return query
     },
     getAnswers() {
         let query =
             `${prefix()}
-            SELECT distinct ?country WHERE {
-                ?item foaf:name ?country.
-                ?item dbo:countryCode ?p.              
-                FILTER(langMatches(lang(?country), "EN"))
-            }`
-
-            return query;
-    }
-
-}
-
-// 4. option
-const riverMouthQuery = {
-    getAnswers(river) {
-        let query =
-            `${prefix()}
-            SELECT ?mouth WHERE {
-                dbr:${river} dbo:riverMouth ?mouth.
+            SELECT DISTINCT ?object
+            WHERE { 
+                ?country dbp:commonName ?object;
+                         rdf:type dbo:Country.
+                FILTER(langMatches(lang(?object), "EN"))
             }`
 
         return query
+    }
+}
+
+// 3
+const highestMountainQuery = {
+
+    getType() {
+        return QuestionTypes.ChooseBest
     },
-    getQuestionObject() {
+    getAnswers() {
         let query = 
-            `${prefix}
-            SELECT ?river WHERE {
-                ?river rdf:type dbo:River.
+            `${prefix()} 
+            SELECT ?object ?value WHERE { 
+                ?mountain rdf:type dbo:Mountain;
+                            dbo:alternativeName ?object;
+                            dbo:elevation ?value.
+                FILTER(langMatches(lang(?object), "EN"))  
             }`
-
         return query
     }
 }
+
+// 4
+const biggestCountryQuery = {
+    getType() {
+        return QuestionTypes.ChooseBest
+    },
+    getAnswers() {
+        let query = 
+            `${prefix()} 
+            SELECT ?object ?value
+            WHERE { 
+                ?country dbp:commonName ?object;
+                         rdf:type dbo:Country;
+                         dbp:areaKm ?value.
+                FILTER(langMatches(lang(?object), "EN"))
+            }`
+        return query    
+    }
+}
+
 
 module.exports = {
-    riverMouthQuery,
+    QuestionTypes,
     countryCapitalQuery,
-    highestMountainInCountryQuery,
-    mostPopulousCityCountryQuery
+    mostPopulousCityCountryQuery,
+    highestMountainQuery,
+    biggestCountryQuery
 }

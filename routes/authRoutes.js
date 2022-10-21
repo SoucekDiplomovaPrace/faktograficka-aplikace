@@ -5,10 +5,7 @@ const passport = require("passport")
 
 const User = require('../models/user')
 const authService = require('../services/authService')
-
-router.get(['/', '/index'], authService.checkAuthenticated, (_, res) => {
-    res.redirect('/quiz/quiz-start')
-})
+const userService = require('../services/userService')
 
 // Sign in | page
 router.get('/signin', (_, res) => {
@@ -18,9 +15,9 @@ router.get('/signin', (_, res) => {
 // Sign in
 router.post("/signin", passport.authenticate("local", {
     successRedirect: "/",
-    failureRedirect: "/signin"
+    failureRedirect: "/auth/signin"
   })
-  )
+)
 
 // Sign up | page
 router.get('/signup', (_, res) => {
@@ -30,25 +27,35 @@ router.get('/signup', (_, res) => {
 // Sign up
 router.post('/signup', authService.checkNotAuthenticated, async (req, res) => {
     try {
-        console.log(req.body.password)
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
 
         let user = new User({
             'username': req.body.username,
             'password': hashedPassword
         })
-        console.log(user)
+
         user.save()
-        res.redirect('/signin')
+        res.redirect('/auth/signin')
     } catch {
-        res.redirect('/signup')
+        res.redirect('/auth/signup')
     }
 })
 
 // Logout
-router.delete('/logout', (req, res) => {
-    req.logOut()
-    res.redirect('/signup')
+router.delete('/logout', (req, res, next) => {
+    req.logout((err) => {
+        if (err) {
+            return next(err)
+        }
+        res.redirect('/auth/signup')
+    })
 })
 
-module.exports = router;
+router.get('*', authService.checkAuthenticated, async (req, res) => {
+    
+    let currentUser = await userService.getUserById(req.session.passport.user)
+    res.status(404)
+    res.render('404.ejs', { username: currentUser.username })
+})
+
+module.exports = router

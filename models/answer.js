@@ -8,12 +8,11 @@ const answerSchema = mongoose.Schema({
     },
     isCorrect: {
         type: Boolean,
-        required: true,
         default: false
     },
     isValid: {
         type: Boolean,
-        required: false
+        default: true
     }
 })
 

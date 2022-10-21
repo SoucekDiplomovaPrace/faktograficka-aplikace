@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Michael Souček">
+
+    <title>Faktografická aplikace | konfigurace</title>
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+    <link href="/css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <div id="wrapper">
+
+        <%- include ('./partials/navigation') %>
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <div id="content">
+                    <div class="container-fluid">
+                        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h1 class="h3 mb-0 text-gray-800">Přehled zodpovězených otázek - aktuální uživatel</h1>
+                        </div>
+
+                        <div class="table-responsive">
+                            
+                            <p>Zodpovězeno otázek: <%= takenQuestionsCount %></p>
+                                                
+                            <p>Správně odpovězeno otázek: <%= correctlyAnsweredCount %></p>
+                            
+                            <p>Špatně odpovězeno otázek: <%= incorrectlyAnsweredCount %></p>
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th style="width:15%">Čas odevzdání</th>
+                                        <th style="width:35%">Otázka</th>
+                                        <th style="width:35%">Možnosti odpovědí</th>
+                                        <th style="width:15%">Vybraná odpověď</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th style="width:15%">Čas odevzdání</th>
+                                        <th style="width:35%">Otázka</th>
+                                        <th style="width:35%">Možnosti odpovědí</th>
+                                        <th style="width:15%">Vybraná odpověď</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    <% for (var i = 0; i < takenQuestionsCount; i++) { %>
+
+                                        <tr>
+                                            <td><%= takenQuestions[i].taken %></td>
+                                            <td><%= takenQuestions[i].question.question %></td>
+                                            <td>
+                                                <ul>
+                                                    <% for (var j = 0; j < takenQuestions[i].question.answers.length; j++) { %>
+                                                        <li>
+                                                            <%= takenQuestions[i].question.answers[j].text %>
+                                                        </li>
+                                                     <% } %>   
+                                                </ul>
+                                            </td>
+                                            <% if (takenQuestions[i].choosenAnswer.isCorrect) { %>
+                                                <td style="background-color: green; color: white"><%= takenQuestions[i].choosenAnswer.text %></td>
+                                            <% } else { %>
+                                                <td style="background-color: red; color: white"><%= takenQuestions[i].choosenAnswer.text %></td>
+                                            <% } %>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <%- include ('./partials/footer') %>
+            </div>
+    </div>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/js/sb-admin-2.min.js"></script>
+    <script src="/vendor/chart.js/Chart.min.js"></script>
+    <script src="/js/demo/chart-area-demo.js"></script>
+    <script src="/js/demo/chart-pie-demo.js"></script>
+</body>
+
+</html>

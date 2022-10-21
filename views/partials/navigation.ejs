@@ -8,7 +8,9 @@
     <li class="nav-item active">
         <a class="nav-link">
             <i class="fas fa-fw fa-user"></i>
-            <span>Michael Souček</span>
+            <span>
+                <%= username %>
+            </span>
         </a>
     </li>
     <hr class="sidebar-divider">
@@ -16,9 +18,15 @@
         Nabídka
     </div>
     <li class="nav-item">
-        <a class="nav-link" href="/quizStart">
+        <a class="nav-link" href="/quiz/quiz-start">
             <i class="fas fa-fw fa-arrow-right"></i>
             <span>Zahájit kvíz</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/quiz/configuration">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Konfigurace</span>
         </a>
     </li>
     <li class="nav-item">
@@ -29,8 +37,7 @@
     </li>
     <hr class="sidebar-divider">
     <li class="nav-item">
-        <form id="logoutForm" action="/logout?_method=DELETE" method="POST">
-            <button type="submit">odh</button>
+        <form id="logoutForm" action="/auth/logout?_method=DELETE" method="POST">
             <a class="nav-link" onclick="document.getElementById('logoutForm').submit()">
                 <i class="fas fa-fw fa-sign-out-alt"></i>
                 <span>Odhlásit se</span>

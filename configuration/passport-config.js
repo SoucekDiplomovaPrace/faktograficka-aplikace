@@ -7,14 +7,15 @@ const initialize = (passport) => {
     const user = await User.findOne({username: username})
 
     if (user == null) {
-      return done(null, false, { message: 'No user with that username' })
+      
+      return done(null, false, { message: 'Toto uživatelské jméno neexistuje!' })
     }
 
     try {
       if (await bcrypt.compare(password, user.password)) {
         return done(null, user)
       } else {
-        return done(null, false, { message: 'Password incorrect' })
+        return done(null, false, { message: 'Špatně zadané heslo' })
       }
     } catch (e) {
       return done(e)

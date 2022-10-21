@@ -3,7 +3,7 @@ const checkAuthenticated = (req, res, next) => {
     return next()
   }
 
-  res.redirect('/signin')
+  res.redirect('/auth/signin')
 }
 
 const checkNotAuthenticated = (req, res, next) => {
