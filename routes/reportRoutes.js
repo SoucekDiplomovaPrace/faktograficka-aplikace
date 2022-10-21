@@ -17,8 +17,22 @@ router.get('/taken-questions-user', async (req, res) => {
         takenQuestions: takenQuestions,
         takenQuestionsCount: takenQuestionsCount,
         correctlyAnsweredCount: correctlyAnswered.length,
-        incorrectlyAnsweredCount: incorrectlyAnswered.length}
-    )
+        incorrectlyAnsweredCount: incorrectlyAnswered.length
+    })
+})
+
+
+router.get('/questions-overview', async (req, res) => {
+
+    let questions = await quizService.getAllQuestions()
+    let questionsCount = questions.length
+    console.log(questions)
+    let currentUser = await userService.getUserById(req.session.passport.user)
+    res.render('questionsOverview.ejs', {
+        username: currentUser.username,
+        questions: questions,
+        questionsCount: questionsCount
+    })
 })
 
 module.exports = router

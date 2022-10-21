@@ -71,15 +71,16 @@ const produceQA = async (queryOption) => {
             questionObject = null
         }
 
+        chosenAnswers = chosenAnswers.sort((a, b) => 0.5 - Math.random());
+
         if (questionObject && questionObject.length > 0) {
             
             await Answer.collection.insertMany(chosenAnswers)
 
             let answersIds = []
             answersIds = chosenAnswers.map(c => c.id)
-
             let question = new Question({
-                question: questionObject[0].object.value,
+                question: query.getQuestionText(questionObject[0].object.value),
                 type: queryOption,
                 answers: answersIds
             })
@@ -109,7 +110,7 @@ const produceQA = async (queryOption) => {
         answersIds = chosenAnswers.map(c => c.id)
         
         let question = new Question({
-            question: 'vyber nej',
+            question: query.getQuestionText(),
             type: queryOption,
             answers: answersIds
         })

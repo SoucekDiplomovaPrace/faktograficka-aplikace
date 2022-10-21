@@ -3,7 +3,6 @@ const QuestionTypes = {
     ChooseTruth: Symbol('ChooseTruth')
 }
 
-
 const prefix = () => {
     let prefixes = 
         `PREFIX dbo: <http://dbpedia.org/ontology/>
@@ -18,16 +17,20 @@ const mostPopulousCityCountryQuery = {
     getType() {
         return QuestionTypes.ChooseTruth
     },
+
+    getQuestionText(object) {
+        return `Do kterého státu patří město ${object}?`
+    },
+
     getQuestionObject(country) {
         let query =
             `${prefix()}
             SELECT ?object WHERE {
                 ?city a dbo:City;
-                    dbo:country dbr:${country};
-                    dbo:populationTotal ?population;
-                    rdfs:label ?object.
+                      dbo:country dbr:${country};
+                      rdfs:label ?object.
                 FILTER(langMatches(lang(?object), "EN"))
-            } ORDER BY DESC(?population)`
+            }`
 
         return query;
     },
@@ -50,6 +53,9 @@ const countryCapitalQuery = {
 
     getType() {
         return QuestionTypes.ChooseTruth
+    },
+    getQuestionText(object) {
+        return `Město ${object} je hlavním městem:`
     },
     getQuestionObject(country) {
         let query =
@@ -82,6 +88,9 @@ const highestMountainQuery = {
     getType() {
         return QuestionTypes.ChooseBest
     },
+    getQuestionText() {
+        return 'Která z těchto hor je nejvyšší?'
+    },
     getAnswers() {
         let query = 
             `${prefix()} 
@@ -99,6 +108,9 @@ const highestMountainQuery = {
 const biggestCountryQuery = {
     getType() {
         return QuestionTypes.ChooseBest
+    },
+    getQuestionText() {
+        return 'Který ze států je rozlohou největší?'
     },
     getAnswers() {
         let query = 

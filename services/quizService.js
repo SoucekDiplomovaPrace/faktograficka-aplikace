@@ -1,7 +1,7 @@
 const Question = require('../models/question')
 const UserQuestion = require('../models/userQuestion')
 
-const getRandomQuestions = async (count) => {
+const getRandomQuestions = async (option, count) => {
 
     let randomQuestions = []
 
@@ -11,7 +11,7 @@ const getRandomQuestions = async (count) => {
 
         let random = Math.floor(Math.random() * collectionCount)
 
-        randomQuestions.push(await Question.findOne().populate('answers').skip(random))
+        randomQuestions.push(await Question.findOne({type: option}).populate('answers').skip(random))
     }
     return randomQuestions
 }
@@ -20,7 +20,13 @@ const getQuizQuestionsByUser = (userId) => {
     return UserQuestion.find({takenBy: userId}).populate({path: 'question', populate: {path: 'answers'}}).populate('choosenAnswer')
 }
 
+const getAllQuestions = () => {
+    return Question.find().populate('answers')
+}
+
+
 module.exports = {
     getRandomQuestions,
+    getAllQuestions,
     getQuizQuestionsByUser
 }

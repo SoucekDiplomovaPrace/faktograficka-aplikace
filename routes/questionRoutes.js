@@ -9,32 +9,39 @@ const router = express.Router()
 
 router.get('/quiz-start', authService.checkAuthenticated, async (req, res) => {
 
+    let message = messageService.getMessage(req)
     let currentUser = await userService.getUserById(req.session.passport.user)
-    res.render('quizStart.ejs', { username: currentUser.username })
+    res.render('quizStart.ejs', { username: currentUser.username, message: message })
 })
 
 router.post('/quiz-start', authService.checkAuthenticated, async (req, res) => {
-    let options = req.body.questionType
-    let countByOption = req.body.questionsCount
+    let option = req.body.questionType
+    let count = req.body.questionsCount
 
-    let randomQuestions = await quizService.getRandomQuestions(countByOption)
+    let randomQuestions = await quizService.getRandomQuestions(option, count)
 
-    let questionsDTO = randomQuestions.map((item1) => {
-        return {
-            id: item1.id,
-            question: item1.question,
-            answers: item1.answers.map((item2) => {
-                return {
-                    id: item2.id,
-                    text: item2.text,
-                    pointed: false
-                }
-            })
-        }
-    })
+    if (randomQuestions.length === count) {
+        let questionsDTO = randomQuestions.map((item1) => {
+            return {
+                id: item1.id,
+                question: item1.question,
+                answers: item1.answers.map((item2) => {
+                    return {
+                        id: item2.id,
+                        text: item2.text,
+                        pointed: false
+                    }
+                })
+            }
+        })
 
-    let currentUser = await userService.getUserById(req.session.passport.user)
-    res.render('confirmStart.ejs', { username: currentUser.username, quiz: questionsDTO, length: randomQuestions.length })
+        let currentUser = await userService.getUserById(req.session.passport.user)
+
+        res.render('confirmStart.ejs', { username: currentUser.username, quiz: questionsDTO, length: randomQuestions.length })
+    } else {
+        req.flash('warning', 'Pro navolené volby není vygenerován dostatek otázek!')
+        res.redirect('/quiz/quiz-start')
+    }
 })
 
 router.get('/quiz', authService.checkAuthenticated, async (req, res) => {

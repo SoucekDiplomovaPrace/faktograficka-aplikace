@@ -33,7 +33,7 @@
                                                         Typ otázky: (ctrl + kliknutí levého tlačítka myše)
                                                     </div>
                                                     <select class="form-select form-control" id="questionType"
-                                                        name="questionType" multiple>
+                                                        name="questionType">
                                                         <option selected value="1">Nejvíce obydlené město ve státě</option>
                                                         <option value="2">Hlavní město státu</option>
                                                         <option value="3">Nejvyšší hora</option>
@@ -42,7 +42,7 @@
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="small mb-1">
-                                                        Počet otázek na vybranou kategorii:
+                                                        Počet otázek:
                                                     </div>
                                                     <input type="number" min="1" step="1" value="5" class="form-control" id="questionsCount" name="questionsCount">
                                                 </div>
@@ -59,6 +59,11 @@
                                                         <span class="text">Vygenerovat otázky</span>
                                                     </a>
                                                 </div> 
+                                                <% if (message.message) { %>
+                                                    <div class="col-sm-6 <%= message.messageHtmlClass %>">
+                                                        <%= message.message %>
+                                                    </div>
+                                                <% } %>
                                             </div>
                                         </form>
                                     </div>
