@@ -19,8 +19,8 @@ router.post('/quiz-start', authService.checkAuthenticated, async (req, res) => {
     let count = req.body.questionsCount
 
     let randomQuestions = await quizService.getRandomQuestions(option, count)
-
-    if (randomQuestions.length === count) {
+    
+    if (randomQuestions.length === parseInt(count)) {
         let questionsDTO = randomQuestions.map((item1) => {
             return {
                 id: item1.id,
@@ -39,7 +39,7 @@ router.post('/quiz-start', authService.checkAuthenticated, async (req, res) => {
 
         res.render('confirmStart.ejs', { username: currentUser.username, quiz: questionsDTO, length: randomQuestions.length })
     } else {
-        req.flash('warning', 'Pro navolené volby není vygenerován dostatek otázek!')
+        req.flash('warning', 'Pro navolené volby není vygenerován dostatek otázek! Nahlédněte do \"Konfigurace\".')
         res.redirect('/quiz/quiz-start')
     }
 })
@@ -50,28 +50,42 @@ router.get('/quiz', authService.checkAuthenticated, async (req, res) => {
 })
 
 router.post('/processQuiz', authService.checkAuthenticated, async (req, res) => {
-
-
+    
     let quizData = []
-
     let currentUser = await userService.getUserById(req.session.passport.user)
-
+    let quizTimestamp = Date.now()
     req.body.forEach(item => {
         let answer = item.answers.find(item => item.pointed === true)
         if (answer) {
 
             let userQuestion = new UserQuestion ({
                 takenBy: currentUser.id,
+                taken: quizTimestamp,
+                timestamp: quizTimestamp.valueOf(),
                 question: item.id,
                 choosenAnswer: answer ? answer.id : null
             })
             quizData.push(userQuestion)
-
-            UserQuestion.collection.insertMany(quizData)
         }
     })
+    
+    UserQuestion.collection.insertMany(quizData)
 
-    res.send('/quiz/configuration')
+    res.send({url: `/quiz/quiz-evaluation/${quizTimestamp}`})
+})
+
+router.get('/quiz-evaluation/:timestamp', authService.checkAuthenticated, async (req, res) => {
+    let currentUser = await userService.getUserById(req.session.passport.user)
+    let lastQuiz = await quizService.getLastQuizByUser(req.session.passport.user, req.params.timestamp)
+    let correctlyAnsweredCount = lastQuiz.filter(q => q.choosenAnswer.isCorrect).length
+    let incorrectlyAnsweredCount = lastQuiz.filter(q => !q.choosenAnswer.isCorrect).length
+
+    res.render('quizEvaluation.ejs', {
+        username: currentUser.username,
+        answeredQuestions: lastQuiz,
+        correctlyAnsweredCount: correctlyAnsweredCount,
+        incorrectlyAnsweredCount: incorrectlyAnsweredCount
+    })
 })
 
 router.post('/generate', authService.checkAuthenticated, async (req, res) => {

@@ -30,32 +30,34 @@
                             <h1 class="h3 mb-0 text-gray-800">Přehled zodpovězených otázek - aktuální uživatel</h1>
                         </div>
 
+                        <p>Zodpovězeno otázek: <%= takenQuestionsCount %></p>
+                                                
+                        <p>Správně odpovězeno otázek: <%= correctlyAnsweredCount %></p>
+                        
+                        <p>Špatně odpovězeno otázek: <%= incorrectlyAnsweredCount %></p>
                         <div class="table-responsive">
                             
-                            <p>Zodpovězeno otázek: <%= takenQuestionsCount %></p>
-                                                
-                            <p>Správně odpovězeno otázek: <%= correctlyAnsweredCount %></p>
-                            
-                            <p>Špatně odpovězeno otázek: <%= incorrectlyAnsweredCount %></p>
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th style="width:15%">Čas odevzdání</th>
+                                        <th style="width:12.5%">Čas odevzdání</th>
                                         <th style="width:35%">Otázka</th>
                                         <th style="width:35%">Možnosti odpovědí</th>
-                                        <th style="width:15%">Vybraná odpověď</th>
+                                        <th style="width:12.5%">Vybraná odpověď</th>
+                                        <th style="width:5%">Přidružený kvíz</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
                                     <tr>
-                                        <th style="width:15%">Čas odevzdání</th>
+                                        <th style="width:12.5%">Čas odevzdání</th>
                                         <th style="width:35%">Otázka</th>
                                         <th style="width:35%">Možnosti odpovědí</th>
-                                        <th style="width:15%">Vybraná odpověď</th>
+                                        <th style="width:12.5%">Vybraná odpověď</th>
+                                        <th style="width:5%">Přidružený kvíz</th>
                                     </tr>
                                 </tfoot>
                                 <tbody>
-                                    <% for (var i = 0; i < takenQuestionsCount; i++) { %>
+                                    <% for (var i = 0; i < takenQuestions.length; i++) { %>
 
                                         <tr>
                                             <td><%= takenQuestions[i].taken %></td>
@@ -74,6 +76,9 @@
                                             <% } else { %>
                                                 <td style="background-color: red; color: white"><%= takenQuestions[i].choosenAnswer.text %></td>
                                             <% } %>
+                                            <td>
+                                                <a href="/quiz/quiz-evaluation/<%= takenQuestions[i].timestamp %>">Celý kvíz</a>
+                                            </td>
                                         </tr>
                                     <% } %>
                                 </tbody>

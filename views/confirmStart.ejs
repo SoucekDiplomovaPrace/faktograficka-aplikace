@@ -64,9 +64,9 @@
         window.addEventListener("load", () => {
             let quiz = <%- JSON.stringify(quiz) %>;
             let quizLength = <%= length %>;
-            localStorage.setItem("quiz", JSON.stringify(quiz));
-            localStorage.setItem("quizLength", quizLength);
-            localStorage.setItem("questionPointer", 0);
+            sessionStorage.setItem("quiz", JSON.stringify(quiz));
+            sessionStorage.setItem("quizLength", quizLength);
+            sessionStorage.setItem("questionPointer", 0);
         });
     </script>
 </body>

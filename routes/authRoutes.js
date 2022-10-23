@@ -47,7 +47,7 @@ router.delete('/logout', (req, res, next) => {
         if (err) {
             return next(err)
         }
-        res.redirect('/auth/signup')
+        res.redirect('/auth/signin')
     })
 })
 

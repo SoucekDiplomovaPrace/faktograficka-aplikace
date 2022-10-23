@@ -9,10 +9,6 @@ const answerSchema = mongoose.Schema({
     isCorrect: {
         type: Boolean,
         default: false
-    },
-    isValid: {
-        type: Boolean,
-        default: true
     }
 })
 

@@ -26,12 +26,20 @@ router.get('/questions-overview', async (req, res) => {
 
     let questions = await quizService.getAllQuestions()
     let questionsCount = questions.length
-    console.log(questions)
+    let questionsType1Count = questions.filter(item => item.type === 1).length
+    let questionsType2Count = questions.filter(item => item.type === 2).length
+    let questionsType3Count = questions.filter(item => item.type === 3).length
+    let questionsType4Count = questions.filter(item => item.type === 4).length
+
     let currentUser = await userService.getUserById(req.session.passport.user)
     res.render('questionsOverview.ejs', {
         username: currentUser.username,
         questions: questions,
-        questionsCount: questionsCount
+        questionsCount: questionsCount,
+        questionsType1Count: questionsType1Count,
+        questionsType2Count: questionsType2Count,
+        questionsType3Count: questionsType3Count,
+        questionsType4Count: questionsType4Count,
     })
 })
 

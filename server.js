@@ -8,7 +8,7 @@ const session = require('express-session')
 const methodOverride = require('method-override')
 const initializePassport = require('./configuration/passport-config')
 
-require('./mongo')
+require('./middleware/mongo')
 require('dotenv').config()
 
 const server = express()

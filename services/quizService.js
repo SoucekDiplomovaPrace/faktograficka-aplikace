@@ -1,3 +1,4 @@
+const { support } = require('jquery')
 const Question = require('../models/question')
 const UserQuestion = require('../models/userQuestion')
 
@@ -5,7 +6,7 @@ const getRandomQuestions = async (option, count) => {
 
     let randomQuestions = []
 
-    let collectionCount = await Question.count()
+    let collectionCount = await Question.find({type: option}).count()
 
     for (let i = 0; i < count; i++) {
 
@@ -24,9 +25,18 @@ const getAllQuestions = () => {
     return Question.find().populate('answers')
 }
 
+const getLastQuizByUser = (userId, timestamp) => {
+    let questions = UserQuestion.find({takenBy: userId, taken: timestamp}).sort({taken: 'desc'}).populate({path: 'question', populate: {path: 'answers'}}).populate('choosenAnswer')
+
+
+
+    return questions
+}
+
 
 module.exports = {
     getRandomQuestions,
+    getLastQuizByUser,
     getAllQuestions,
     getQuizQuestionsByUser
 }

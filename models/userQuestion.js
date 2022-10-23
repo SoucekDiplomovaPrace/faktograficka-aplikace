@@ -7,7 +7,11 @@ const User = require('./user')
 const userQuestionSchema = mongoose.Schema({
     taken: {
         type: Date,
-        default: Date.now
+        required: true
+    },
+    timestamp: {
+        type: Number,
+        required: true
     },
     takenBy: {
         type: mongoose.Schema.Types.ObjectId,

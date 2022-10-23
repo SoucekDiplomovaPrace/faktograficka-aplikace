@@ -107,9 +107,9 @@
     <script defer>
 
         window.addEventListener("load", () => {
-            let quiz = JSON.parse(localStorage.getItem("quiz"));
-            let length = localStorage.getItem("quizLength");
-            let pointer = parseInt(localStorage.getItem("questionPointer"));
+            let quiz = JSON.parse(sessionStorage.getItem("quiz"));
+            let length = sessionStorage.getItem("quizLength");
+            let pointer = parseInt(sessionStorage.getItem("questionPointer"));
 
             let currentQuestion = quiz[pointer];
 
@@ -133,26 +133,26 @@
         });
 
         $('#next-question').click(() => {
-            let pointer = localStorage.getItem("questionPointer");
-            let quiz = JSON.parse(localStorage.getItem("quiz"));
-            let length = localStorage.getItem("quizLength");
+            let pointer = sessionStorage.getItem("questionPointer");
+            let quiz = JSON.parse(sessionStorage.getItem("quiz"));
+            let length = sessionStorage.getItem("quizLength");
             if (pointer < (length - 1)) {
-                localStorage.setItem("questionPointer", ++pointer);
+                sessionStorage.setItem("questionPointer", ++pointer);
                 location.reload();
             }
         });
 
         $('#prev-question').click(() => {
-            let pointer = localStorage.getItem('questionPointer');
+            let pointer = sessionStorage.getItem('questionPointer');
             if (pointer > 0) {
-                localStorage.setItem("questionPointer", --pointer);
+                sessionStorage.setItem("questionPointer", --pointer);
                 location.reload();
             }
         });
 
         function editAnswer(optionNumber) {
-            let quiz = JSON.parse(localStorage.getItem('quiz'));
-            let pointer = localStorage.getItem('questionPointer');
+            let quiz = JSON.parse(sessionStorage.getItem('quiz'));
+            let pointer = sessionStorage.getItem('questionPointer');
             let currentQuestion = quiz[pointer];
         
             currentQuestion.answers.forEach(item => {
@@ -160,13 +160,13 @@
             });
             currentQuestion.answers[optionNumber].pointed = true;
             quiz[pointer] = currentQuestion;
-            localStorage.setItem('quiz', JSON.stringify(quiz));
+            sessionStorage.setItem('quiz', JSON.stringify(quiz));
             location.reload();
         }
 
         function sendQuiz() {
 
-            let data = localStorage.getItem("quiz");
+            let data = sessionStorage.getItem("quiz");
 
             $.ajax({
                 type: 'POST',
@@ -174,7 +174,7 @@
                 contentType: 'application/json',
                 url: '/quiz/processQuiz',
                 success: (data, textStatus) => {
-                    window.location.href = data;
+                    window.location.href = data.url;
                 }   
             })
         }

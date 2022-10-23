@@ -1,7 +1,7 @@
 const Answer = require('../models/answer')
 const Question = require('../models/question')
 
-const queryTemplate = require('../middleware/questionTemplate')
+const queryTemplate = require('../utils/questionTemplate')
 
 const fetch = require('node-fetch-commonjs')
 
