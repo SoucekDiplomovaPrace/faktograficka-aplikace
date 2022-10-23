@@ -29,63 +29,65 @@
                         <div class="d-sm-flex align-items-center justify-content-between mb-4">
                             <h1 class="h3 mb-0 text-gray-800">Konfigurace</h1>
                         </div>
-                        <div class="col-xl-3 col-lg-3"></div>
-                        <div class="col-xl-6 col-lg-6">
-                            <div class="card shadow mb-4">
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">
-                                        Generování otázek
-                                    </h6>
-                                </div>
-                                <div class="card-body">
-                                    <form id="generateForm" action="/quiz/generate" method="post">
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <div class="small mb-1">
-                                                    Typ otázky: (ctrl + kliknutí levého tlačítka myše)
+                        <div class="row">
+                            <div class="col-xl-3 col-lg-3"></div>
+                            <div class="col-xl-6 col-lg-6">
+                                <div class="card shadow mb-4">
+                                    <div
+                                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                        <h6 class="m-0 font-weight-bold text-primary">
+                                            Generování otázek
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="generateForm" action="/quiz/generate" method="post">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="small mb-1">
+                                                        Typ otázky: (ctrl + kliknutí levého tlačítka myše)
+                                                    </div>
+                                                    <select class="form-select form-control" id="questionType"
+                                                        name="questionType" multiple>
+                                                        <option selected value="1">Město patřící do státu</option>
+                                                        <option value="2">Hlavní město státu</option>
+                                                        <option value="3">Nejvyšší hora</option>
+                                                        <option value="4">Největší stát</option>
+                                                    </select>
                                                 </div>
-                                                <select class="form-select form-control" id="questionType"
-                                                    name="questionType" multiple>
-                                                    <option selected value="1">Město patřící do státu</option>
-                                                    <option value="2">Hlavní město státu</option>
-                                                    <option value="3">Nejvyšší hora</option>
-                                                    <option value="4">Největší stát</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <div class="small mb-1">
-                                                    Počet otázek na vybranou kategorii:
+                                                <div class="col-sm-6">
+                                                    <div class="small mb-1">
+                                                        Počet otázek na vybranou kategorii:
+                                                    </div>
+                                                    <input type="number" min="1" step="1" value="5" class="form-control"
+                                                        id="questionsCount" name="questionsCount">
                                                 </div>
-                                                <input type="number" min="1" step="1" value="5" class="form-control"
-                                                    id="questionsCount" name="questionsCount">
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <br />
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <a data-toggle="modal" data-target="#loadingModal"
-                                                    onclick="document.getElementById('generateForm').submit()"
-                                                    class="btn btn-primary btn-icon-split">
-                                                    <span class="icon text-white-50">
-                                                        <i class="fas fa-arrow-right"></i>
-                                                    </span>
-                                                    <span class="text">Generovat otázky</span>
-                                                </a>
+                                            <div class="row">
+                                                <br />
                                             </div>
-                                            <% if (message.message) { %>
-                                                <div class="col-sm-6 <%= message.messageHtmlClass %>">
-                                                    <%= message.message %>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <a data-toggle="modal" data-target="#loadingModal"
+                                                        onclick="document.getElementById('generateForm').submit()"
+                                                        class="btn btn-primary btn-icon-split">
+                                                        <span class="icon text-white-50">
+                                                            <i class="fas fa-arrow-right"></i>
+                                                        </span>
+                                                        <span class="text">Generovat otázky</span>
+                                                    </a>
                                                 </div>
-                                                <% } %>
-                                        </div>
-                                    </form>
+                                                <% if (message.message) { %>
+                                                    <div class="col-sm-6 <%= message.messageHtmlClass %>">
+                                                        <%= message.message %>
+                                                    </div>
+                                                    <% } %>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xl-3 col-lg-3"></div>
                     </div>
                 </div>
