@@ -18,9 +18,16 @@ router.post('/quiz-start', authService.checkAuthenticated, async (req, res) => {
     let option = req.body.questionType
     let count = req.body.questionsCount
 
-    let randomQuestions = await quizService.getRandomQuestions(option, count)
-    
-    if (randomQuestions.length === parseInt(count)) {
+    let questions = []
+
+    if (parseInt(option) > 0) {
+        questions = await quizService.getAllQuestionsByType(option)
+    } else if (parseInt(option) === -9999) {
+        questions = await quizService.getAllQuestions()
+    }
+    if (questions.length > 0 && questions.length >= parseInt(count)) {
+        
+        let randomQuestions = await quizService.getRandomQuestions(questions, count)
         let questionsDTO = randomQuestions.map((item1) => {
             return {
                 id: item1.id,

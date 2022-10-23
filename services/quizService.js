@@ -1,18 +1,11 @@
-const { support } = require('jquery')
 const Question = require('../models/question')
 const UserQuestion = require('../models/userQuestion')
 
-const getRandomQuestions = async (option, count) => {
-
+const getRandomQuestions = async (array, count) => {
     let randomQuestions = []
-
-    let collectionCount = await Question.find({type: option}).count()
-
     for (let i = 0; i < count; i++) {
-
-        let random = Math.floor(Math.random() * collectionCount)
-
-        randomQuestions.push(await Question.findOne({type: option}).populate('answers').skip(random))
+        let random = Math.floor(Math.random() * array.length)
+        randomQuestions.push(array[random])
     }
     return randomQuestions
 }
@@ -33,10 +26,14 @@ const getLastQuizByUser = (userId, timestamp) => {
     return questions
 }
 
+const getAllQuestionsByType = (option) => {
+    return Question.find({type: option}).populate('answers')
+}
 
 module.exports = {
     getRandomQuestions,
     getLastQuizByUser,
+    getAllQuestionsByType,
     getAllQuestions,
     getQuizQuestionsByUser
 }
