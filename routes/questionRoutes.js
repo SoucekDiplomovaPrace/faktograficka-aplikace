@@ -41,14 +41,11 @@ router.post('/quiz-start', authService.checkAuthenticated, async (req, res) => {
                 })
             }
         })
-
-        let currentUser = await userService.getUserById(req.session.passport.user)
-
-        res.render('confirmStart.ejs', { username: currentUser.username, quiz: questionsDTO, length: randomQuestions.length })
+        res.send({quiz: questionsDTO, length: randomQuestions.length})
     } else {
-        req.flash('warning', 'Pro navolené volby není vygenerován dostatek otázek! Nahlédněte do \"Konfigurace\".')
-        res.redirect('/quiz/quiz-start')
+        res.send({quiz: [], length: 0})
     }
+
 })
 
 router.get('/quiz', authService.checkAuthenticated, async (req, res) => {

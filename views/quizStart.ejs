@@ -26,47 +26,52 @@
                                         </h6>
                                     </div>
                                     <div class="card-body">
-                                        <form id="generateForm" action="/quiz/quiz-start" method="post">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <div class="small mb-1">
-                                                        Typ otázky:
-                                                    </div>
-                                                    <select class="form-select form-control" id="questionType"
-                                                        name="questionType">
-                                                        <option selected value="-9999">Vše</option>
-                                                        <option value="1">Město patřící do státu</option>
-                                                        <option value="2">Hlavní město státu</option>
-                                                        <option value="3">Nejvyšší hora</option>
-                                                        <option value="4">Největší stát</option>
-                                                    </select>
+                                        <div class="text-info">
+                                            Kvíz bude složen z již vygenerovaných otázek z DBpedia.
+                                        </div>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="small mb-1">
+                                                    Typ otázky:
                                                 </div>
-                                                <div class="col-sm-6">
-                                                    <div class="small mb-1">
-                                                        Počet otázek:
-                                                    </div>
-                                                    <input type="number" min="1" step="1" value="5" class="form-control" id="questionsCount" name="questionsCount">
+                                                <select class="form-select form-control" id="questionType"
+                                                    name="questionType">
+                                                    <option selected value="-9999">Vše</option>
+                                                    <option value="1">Město patřící do státu</option>
+                                                    <option value="2">Hlavní město státu</option>
+                                                    <option value="3">Nejvyšší hora</option>
+                                                    <option value="4">Největší stát</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="small mb-1">
+                                                    Počet otázek:
                                                 </div>
+                                                <input type="number" min="1" step="1" value="5" class="form-control"
+                                                    id="questionsCount" name="questionsCount">
                                             </div>
-                                            <div class="row">
-                                                <br />
+                                        </div>
+                                        <div class="row">
+                                            <br />
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <a data-toggle="modal" data-target="#loadingModal"
+                                                    onclick="generateQuiz()" class="btn btn-primary btn-icon-split">
+                                                    <span class="icon text-white-50">
+                                                        <i class="fas fa-arrow-right"></i>
+                                                    </span>
+                                                    <span class="text">Připravit otázky</span>
+                                                </a>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <a data-toggle="modal" data-target="#loadingModal" onclick="document.getElementById('generateForm').submit()" class="btn btn-primary btn-icon-split">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-arrow-right"></i>
-                                                        </span>
-                                                        <span class="text">Připravit otázky</span>
-                                                    </a>
-                                                </div> 
-                                                <% if (message.message) { %>
-                                                    <div class="col-sm-6 <%= message.messageHtmlClass %>">
-                                                        <%= message.message %>
-                                                    </div>
+                                            <div id="error" class="text-danger"></div>
+                                            <% if (message.message) { %>
+                                                <div class="col-sm-6 <%= message.messageHtmlClass %>">
+                                                    <%= message.message %>
+                                                </div>
                                                 <% } %>
-                                            </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -76,13 +81,13 @@
                     </div>
                 </div>
                 <%- include ('./partials/footer') %>
-                <%- include ('./partials/loading') %>
+                    <%- include ('./partials/loading') %>
             </div>
     </div>
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-    
+
     <script src="/vendor/jquery/jquery.min.js"></script>
     <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -90,6 +95,34 @@
     <script src="/vendor/chart.js/Chart.min.js"></script>
     <script src="/js/demo/chart-area-demo.js"></script>
     <script src="/js/demo/chart-pie-demo.js"></script>
+    <script defer>
+
+        function generateQuiz() {
+
+            let question = $('#questionType').val();
+            let count = $('#questionsCount').val();
+            $.ajax({
+                type: 'POST',
+                data: JSON.stringify({
+                    "questionType": question,
+                    "questionsCount": count
+                }),
+                contentType: 'application/json',
+                url: '/quiz/quiz-start',
+                success: (data, textStatus) => {
+                    if (data.length > 0) {
+                        sessionStorage.setItem("quiz", JSON.stringify(data.quiz));
+                        sessionStorage.setItem("quizLength", data.length);
+                        sessionStorage.setItem("questionPointer", 0);
+                        window.location.href = "/quiz/quiz";
+                    } else {
+                        $('#error').text('V databázi není dostatek otázek pro daný kvíz!')
+                    }
+                }
+            })
+        }
+
+    </script>
 </body>
 
 </html>

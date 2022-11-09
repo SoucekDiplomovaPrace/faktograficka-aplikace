@@ -3,6 +3,18 @@ const UserQuestion = require('../models/userQuestion')
 
 const getRandomQuestions = async (array, count) => {
     let randomQuestions = []
+
+    let iter = 0
+
+    while (iter < count) {
+        let random = Math.floor(Math.random() * array.length)
+
+        if (array.some(question => question.id === array[random].id)) {
+            randomQuestions.push(array[random])
+            iter++
+        }
+    }
+
     for (let i = 0; i < count; i++) {
         let random = Math.floor(Math.random() * array.length)
         randomQuestions.push(array[random])
