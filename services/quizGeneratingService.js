@@ -136,12 +136,13 @@ const produceQA = async (queryOption) => {
             chosenAnswers.push(new Answer({text: item.value.value}))
             chosenAnswers[0].isCorrect = true
 
-            while (counter != 0) {
-                let randomNumber = generateRandomNumber(item.value.value)
+            while (counter != 1) {
+                let randomNumber = generateRandomNumber(item.value.value, queryOption)
                 if (randomNumber !== item.value.value) {
                     chosenAnswers.push(new Answer({text: randomNumber}))
+                    
+                    counter--
                 }
-                counter--;
             }
 
             await Answer.collection.insertMany(chosenAnswers)
@@ -193,7 +194,11 @@ const getRandomItem = (array, wholeObject) => {
     return item.object.value
 }
 
-const generateRandomNumber = (number) => {
+const generateRandomNumber = (number, queryOption) => {
+    if (queryOption === 6) {
+        let numberSign = Math.random() >= 0.5 ? 1 : -1
+        return parseInt(20 * Math.random() * numberSign)
+    }
     return parseInt(2 * number * Math.random())
 }
 
