@@ -1,6 +1,7 @@
 const QuestionTypes = {
     ChooseBest: Symbol ('ChooseBest'),
-    ChooseTruth: Symbol('ChooseTruth')
+    ChooseTruth: Symbol('ChooseTruth'),
+    ChooseNumber: Symbol('ChooseNumber')
 }
 
 const prefix = () => {
@@ -44,7 +45,7 @@ const mostPopulousCityCountryQuery = {
                 FILTER(langMatches(lang(?object), "EN"))
             }`
 
-            return query;
+        return query;
     }
 }
 
@@ -75,7 +76,7 @@ const countryCapitalQuery = {
             WHERE { 
                 ?country dbp:commonName ?object;
                          rdf:type dbo:Country.
-                FILTER(langMatches(lang(?object), "EN"))
+                FILTER(langMatches(lang(?object), "EN") && datatype(?object) = xsd:string)
             }`
 
         return query
@@ -120,17 +121,68 @@ const biggestCountryQuery = {
                 ?country dbp:commonName ?object;
                          rdf:type dbo:Country;
                          dbp:areaKm ?value.
-                FILTER(langMatches(lang(?object), "EN"))
+                FILTER(langMatches(lang(?object), "EN") && datatype(?value) = xsd:integer)
             }`
         return query    
     }
 }
 
+// 5. option
+const countryOfficialLangsCountQuery = {
+    getType() {
+        return QuestionTypes.ChooseNumber
+    },
+    getQuestionText(country) {
+        return `Kolik úředních jazyků je ustanoveno v ${country}?`
+    },
+    getAnswers() {
+        let query =
+            `${prefix()}
+            SELECT ?object (COUNT(?lang)) AS ?value
+            WHERE {
+                ?country dbo:officialLanguage ?lang;
+                         dbp:conventionalLongName ?object;
+                         rdf:type dbo:Country.
+                FILTER(langMatches(lang(?object), "EN")).
+            } 
+            GROUP BY ?object
+            HAVING (COUNT(*) > 1) 
+
+            `
+        return query    
+    }
+
+}
+
+// 6. option
+const firstEstablishedYearCountryQuery = {
+    getType() {
+        return QuestionTypes.ChooseNumber
+    },
+    getQuestionText(country) {
+        return `Ve kterém roce byla první zmínka o ${country}?`
+    },
+    getAnswers() {
+        let query =
+            `${prefix()}
+            SELECT ?object year(min(?date)) as ?value
+            WHERE {
+                ?country rdf:type dbo:Country;
+                         dbp:establishedDate ?date;
+                         foaf:name ?object.
+                FILTER(langMatches(lang(?object), "EN") && datatype(?date) = xsd:date)
+            } GROUP BY (?object)
+            `
+        return query
+    }
+}
 
 module.exports = {
     QuestionTypes,
     countryCapitalQuery,
     mostPopulousCityCountryQuery,
     highestMountainQuery,
-    biggestCountryQuery
+    biggestCountryQuery,
+    countryOfficialLangsCountQuery,
+    firstEstablishedYearCountryQuery
 }

@@ -40,82 +40,126 @@ const produceQA = async (queryOption) => {
             break
         case 4:
             query = queryTemplate.biggestCountryQuery
-
+            break
+        case 5:
+            query = queryTemplate.countryOfficialLangsCountQuery
+            break
+        case 6:
+            query = queryTemplate.firstEstablishedYearCountryQuery
+            break
     }
 
     let generatedAnswers = await sendSparqlRequest(query.getAnswers())
     let chosenAnswers = []
     let counter = 4
 
-    if (query.getType() === queryTemplate.QuestionTypes.ChooseTruth) {
-        let questionObject
+    switch(query.getType()) {
+    
+        case queryTemplate.QuestionTypes.ChooseTruth: {
+            let questionObject
 
-        while (counter != 0) {
-            let item = getRandomItem(generatedAnswers, false)
-            if (!chosenAnswers.includes(item)) {
-                chosenAnswers.push(new Answer({
-                  text: item  
-                }))
-                counter--
+            while (counter != 0) {
+                let item = getRandomItem(generatedAnswers, false)
+                if (!chosenAnswers.includes(item)) {
+                    chosenAnswers.push(new Answer({
+                      text: item  
+                    }))
+                    counter--
+                }
             }
+    
+            for (let i = 0; i < 4; i++) {
+                let searchedText = chosenAnswers[i].text.replace(/\s/g, '_')
+                questionObject = await sendSparqlRequest(query.getQuestionObject(searchedText))
+    
+                if (questionObject) {
+                    chosenAnswers[i].isCorrect = true
+                    break
+                }
+                questionObject = null
+            }
+    
+            chosenAnswers = chosenAnswers.sort((a, b) => 0.5 - Math.random());
+    
+            if (questionObject && questionObject.length > 0) {
+                
+                await Answer.collection.insertMany(chosenAnswers)
+    
+                let answersIds = []
+                answersIds = chosenAnswers.map(c => c.id)
+                let question = new Question({
+                    question: query.getQuestionText(questionObject[0].object.value),
+                    type: queryOption,
+                    answers: answersIds
+                })
+                
+                question.save()
+            } else {
+                return
+            }
+    
+            return questionObject
         }
 
-        for (let i = 0; i < 4; i++) {
-            let searchedText = chosenAnswers[i].text.replace(/\s/g, '_')
-            questionObject = await sendSparqlRequest(query.getQuestionObject(searchedText))
-
-            if (questionObject) {
-                chosenAnswers[i].isCorrect = true
-                break
+        case queryTemplate.QuestionTypes.ChooseBest: {
+            let tempArray = []
+            for (let i = 0; i < 4; i++) {
+                let item = getRandomItem(generatedAnswers, true)
+                tempArray.push(item)
             }
-            questionObject = null
-        }
-
-        chosenAnswers = chosenAnswers.sort((a, b) => 0.5 - Math.random());
-
-        if (questionObject && questionObject.length > 0) {
             
+            tempArray.sort((i, j) => j.value.value - i.value.value)
+            chosenAnswers = []
+            chosenAnswers = tempArray.map(item => new Answer({text: item.object.value}))
+            chosenAnswers[0].isCorrect = true
+    
+            await Answer.collection.insertMany(chosenAnswers)
+            
+            let answersIds = []
+            answersIds = chosenAnswers.map(c => c.id)
+            
+            let question = new Question({
+                question: query.getQuestionText(),
+                type: queryOption,
+                answers: answersIds
+            })
+            question.save()
+            return answersIds.length > 0
+        }
+
+        case queryTemplate.QuestionTypes.ChooseNumber: {
+
+            console.log(generatedAnswers)
+
+            let item = getRandomItem(generatedAnswers, true)
+              
+            chosenAnswers.push(new Answer({text: item.value.value}))
+            chosenAnswers[0].isCorrect = true
+
+            while (counter != 0) {
+                let randomNumber = generateRandomNumber(item.value.value)
+                if (randomNumber !== item.value.value) {
+                    chosenAnswers.push(new Answer({text: randomNumber}))
+                }
+                counter--;
+            }
+
             await Answer.collection.insertMany(chosenAnswers)
 
             let answersIds = []
             answersIds = chosenAnswers.map(c => c.id)
+
             let question = new Question({
-                question: query.getQuestionText(questionObject[0].object.value),
+                question: query.getQuestionText(item.object.value),
                 type: queryOption,
                 answers: answersIds
             })
-            
+
             question.save()
-        } else {
-            return
-        }
 
-        return questionObject
-    } else if (query.getType() === queryTemplate.QuestionTypes.ChooseBest) {
-        
-        let tempArray = []
-        for (let i = 0; i < 4; i++) {
-            let item = getRandomItem(generatedAnswers, true)
-            tempArray.push(item)
-        }
-        
-        tempArray.sort((i, j) => j.value.value - i.value.value)
-        chosenAnswers = []
-        chosenAnswers = tempArray.map(item => new Answer({text: item.object.value}))
-        chosenAnswers[0].isCorrect = true
-
-        await Answer.collection.insertMany(chosenAnswers)
-        
-        let answersIds = []
-        answersIds = chosenAnswers.map(c => c.id)
-        
-        let question = new Question({
-            question: query.getQuestionText(),
-            type: queryOption,
-            answers: answersIds
-        })
-        question.save()
-        return answersIds.length > 0
+            return question
+            
+        }    
     }
 }
 
@@ -148,6 +192,11 @@ const getRandomItem = (array, wholeObject) => {
 
     return item.object.value
 }
+
+const generateRandomNumber = (number) => {
+    return parseInt(2 * number * Math.random())
+}
+
 
 module.exports = {
     init
