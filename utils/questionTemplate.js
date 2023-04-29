@@ -76,7 +76,7 @@ const countryCapitalQuery = {
             WHERE { 
                 ?country dbp:commonName ?object;
                          rdf:type dbo:Country.
-                FILTER(langMatches(lang(?object), "EN") && datatype(?object) = xsd:string)
+                FILTER(langMatches(lang(?object), "EN"))
             }`
 
         return query
