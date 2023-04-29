@@ -9,15 +9,11 @@ const getRandomQuestions = async (array, count) => {
     while (iter < count) {
         let random = Math.floor(Math.random() * array.length)
 
-        if (array.some(question => question.id === array[random].id)) {
+
+        if (!randomQuestions.includes(array[random])) {
             randomQuestions.push(array[random])
             iter++
         }
-    }
-
-    for (let i = 0; i < count; i++) {
-        let random = Math.floor(Math.random() * array.length)
-        randomQuestions.push(array[random])
     }
     return randomQuestions
 }
