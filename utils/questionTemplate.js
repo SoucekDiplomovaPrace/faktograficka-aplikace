@@ -147,7 +147,6 @@ const countryOfficialLangsCountQuery = {
             } 
             GROUP BY ?object
             HAVING (COUNT(*) > 1) 
-
             `
         return query    
     }
@@ -165,7 +164,7 @@ const firstEstablishedYearCountryQuery = {
     getAnswers() {
         let query =
             `${prefix()}
-            SELECT ?object year(min(?date)) as ?value
+            SELECT ?object year(min(?date)) AS ?value
             WHERE {
                 ?country rdf:type dbo:Country;
                          dbp:establishedDate ?date;

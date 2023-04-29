@@ -30,6 +30,8 @@ router.get('/questions-overview', async (req, res) => {
     let questionsType2Count = questions.filter(item => item.type === 2).length
     let questionsType3Count = questions.filter(item => item.type === 3).length
     let questionsType4Count = questions.filter(item => item.type === 4).length
+    let questionsType5Count = questions.filter(item => item.type === 5).length
+    let questionsType6Count = questions.filter(item => item.type === 6).length
 
     let currentUser = await userService.getUserById(req.session.passport.user)
     res.render('questionsOverview.ejs', {
@@ -40,6 +42,8 @@ router.get('/questions-overview', async (req, res) => {
         questionsType2Count: questionsType2Count,
         questionsType3Count: questionsType3Count,
         questionsType4Count: questionsType4Count,
+        questionsType5Count: questionsType5Count,
+        questionsType6Count: questionsType6Count
     })
 })
 
